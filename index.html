@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дорожное бинго — генератор карточек для детей</title>
+<meta name="description" content="Бесплатный генератор карточек «Дорожное бинго» — игра в дорогу для детей. Свой список слов, печать и PDF. Канал @carpemachinatio">
+
+<!-- Open Graph / превью ссылки в Telegram -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="🚗 Дорожное бинго — карточки для детей">
+<meta property="og:description" content="Генератор карточек для игры в дорогу. Свой список слов, эмодзи-картинки, печать и PDF. @carpemachinatio">
+<meta property="og:site_name" content="@carpemachinatio">
+<!-- og:image: после хостинга подставь URL скриншота карточки -->
+<meta property="og:image" content="">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0 16px 16px;
+    background: #f4f4f4;
+    color: #222;
+  }
+
+  .hero {
+    max-width: 720px;
+    margin: 0 auto 18px;
+    text-align: center;
+    padding: 28px 18px 22px;
+  }
+  .hero .emoji { font-size: 46px; }
+  .hero h1 { font-size: 26px; margin: 8px 0 6px; }
+  .hero p { color: #555; font-size: 15px; margin: 0; }
+  .hero a { color: #2d6cdf; text-decoration: none; font-weight: 600; }
+  .hero a:hover { text-decoration: underline; }
+
+  .panel {
+    max-width: 720px;
+    margin: 0 auto 24px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .panel h2 { font-size: 16px; margin: 0 0 10px; }
+  .rules { font-size: 14px; line-height: 1.6; margin: 0 0 4px; padding-left: 20px; }
+  .rules li { margin-bottom: 2px; }
+
+  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
+  textarea {
+    width: 100%;
+    min-height: 170px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: vertical;
+  }
+  .counter { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .counter.ok { color: #1e8449; }
+  .counter.bad { color: #c0392b; }
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .row label { margin: 0; }
+  input[type=number] { width: 64px; padding: 7px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+  .hint { font-size: 12px; color: #888; margin-top: 6px; line-height: 1.4; }
+  button {
+    font-size: 15px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2d6cdf;
+    color: #fff;
+    cursor: pointer;
+  }
+  button.secondary { background: #666; }
+  button:hover { filter: brightness(1.08); }
+
+  .card {
+    width: 18cm;
+    max-width: 100%;
+    margin: 0 auto 24px;
+    background: #fff;
+    border: 3px solid #222;
+    border-radius: 10px;
+    padding: 10px 14px 12px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .card h2 {
+    text-align: center;
+    margin: 4px 0 10px;
+    font-size: 22px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #222;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 4px;
+  }
+  .cell {
+    border: 1.5px solid #444;
+    border-radius: 7px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3px;
+    overflow: hidden;
+  }
+  .cell .emoji {
+    font-size: 40px;
+    line-height: 1.05;
+    white-space: nowrap;
+    letter-spacing: -1px;
+  }
+  .cell .emoji.two { font-size: 32px; }
+  .cell .emoji.three { font-size: 25px; }
+  .cell .label { font-size: 11px; line-height: 1.1; margin-top: 3px; font-weight: 600; }
+  .cell.free {
+    background: #e0e0e0;
+    color: #222;
+    border-color: #888;
+  }
+  .cell.free .emoji { font-size: 32px; }
+  .cell.free .label {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .card .footer {
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .hero, .panel { display: none; }
+    .card {
+      width: 100%;
+      margin: 0 0 0.6cm;
+      border-width: 2px;
+    }
+    @page { size: A4 portrait; margin: 1cm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="emoji">🚗🛣️🎲</div>
+  <h1>Дорожное бинго</h1>
+  <p>Игра в дорогу для детей. Канал: <a href="https://t.me/carpemachinatio" target="_blank" rel="noopener">@carpemachinatio</a></p>
+</div>
+
+<div class="panel">
+  <h2>📋 Как играть</h2>
+  <ol class="rules">
+    <li>Раздай каждому свою карточку.</li>
+    <li>Заметил объект из клетки за окном — отмечай её (фишкой, пальцем или карандашом).</li>
+    <li>Центр «Бинго» — бесплатная клетка, уже закрыта.</li>
+    <li>Закрыл целый ряд (по горизонтали, вертикали или диагонали) — кричи «Бинго!».</li>
+    <li>Закрыл всю карточку — полная победа.</li>
+  </ol>
+</div>
+
+<div class="panel">
+  <h2>✏️ Свой список</h2>
+  <label for="words">Понятия (по одному в строке)</label>
+  <textarea id="words" spellcheck="false"></textarea>
+  <div id="counter" class="counter"></div>
+  <div class="hint">
+    Формат строки: <b>1–3 эмодзи</b>, пробел, затем <b>название</b> (рус. или англ.).<br>
+    Пример: <code>🟢🌿 Омела</code> &nbsp;·&nbsp; <code>🚂🛤️ Ж/д переезд</code> &nbsp;·&nbsp; <code>🐄 Корова</code><br>
+    Несколько эмодзи помогают тем, кто ещё плохо читает.
+  </div>
+
+  <div class="row">
+    <label for="count">Сколько карточек:</label>
+    <input type="number" id="count" value="8" min="1" max="40">
+    <button onclick="render()">✨ Сгенерировать</button>
+    <button class="secondary" onclick="window.print()">🖨️ Печать / PDF</button>
+    <button class="secondary" onclick="copyShareLink()">🔗 Ссылка с этим списком</button>
+  </div>
+</div>
+
+<div id="cards"></div>
+
+<script>
+const DEFAULT_LIST = `🚙🌍 Авто с иностранными номерами
+🚌 Автобус (рейсовый/городской)
+🚏 Автобусная остановка
+🚗🔗 Авто с прицепом
+🐦 Аист
+🏗️ Башенный кран
+🛢️🚛 Бензовоз
+🌳 Большое одинокое дерево
+🚲 Велосипед
+🌬️🌀 Ветряная мельница
+🚰🗼 Водонапорная башня
+🪺🐦 Гнездо аиста на столбе
+🏘️ Деревня
+🧱🏠 Дом из красного кирпича
+🏡 Дом с черепичной крышей
+🚂🛤️ Ж/д переезд
+⛽ Заправка
+🎨🧱 Здание с граффити
+⛺🪑 Знак «место привала»
+🛑 Знак «стоп»
+⏲️🚗 Ограничение скорости <60
+🦬 Зубр (статуя/знак)
+📷 Камера (видеофиксация)
+🕳️ Канава
+🪦 Кладбище
+🌽🚜 Комбайн
+🐄 Корова
+🛖🐄 Коровник
+🐈 Кот
+🌲🌲 Лес
+🐎 Лошадь
+🏪 Магазин
+🚓 Машина ГАИ
+🚗🧽 Мойка
+🥛🚛 Молоковоз
+🌉 Мост
+🏍️ Мотоцикл
+🗑️ Мусорный контейнер
+🪑 Необычная скамейка
+🐑🐐 Овца или коза
+🏞️💧 Озеро
+🟢🌿 Омела
+⚡🗼 Опора ЛЭП
+🗿 Памятник / скульптура
+🚒 Пожарная машина
+🌾 Поле
+🛣️🔵 Синий указатель с километражом
+🪵 Сложенные брёвна
+🐕 Собака
+📡🗼 Сотовая вышка
+🐄🐄 Стадо коров / пастух
+🚧 Стройка
+🪧🌊 Табличка с названием реки
+🚜 Трактор
+🚍🧳 Туристический автобус
+🔚🏘️ Конец населённого пункта
+🎀 Украшение на столбе
+🦆 Утки
+🇧🇾 Флаг страны
+🚛 Фура с логотипом
+⛰️ Холм
+⛪ Церковь с колокольней
+🏎️ Яркая машина`;
+
+const CHANNEL = "@carpemachinatio";
+const NEEDED = 24;
+
+// Разбор строки: ведущие эмодзи (до первой буквы) -> картинка, остальное -> подпись.
+function parseLine(line) {
+  const trimmed = line.trim();
+  if (!trimmed) return null;
+  const m = trimmed.match(/[A-Za-zА-Яа-яЁё]/);
+  if (!m) return { emoji: trimmed, label: "" };
+  const idx = m.index;
+  const emoji = trimmed.slice(0, idx).trim();
+  const label = trimmed.slice(idx).trim();
+  return { emoji: emoji || "•", label };
+}
+
+function parseAll() {
+  return document.getElementById('words').value
+    .split('\n').map(parseLine).filter(Boolean);
+}
+
+// Кол-во эмодзи-знаков (с учётом ZWJ/флагов через сегментацию).
+function emojiCount(str) {
+  if (window.Intl && Intl.Segmenter) {
+    const seg = new Intl.Segmenter("ru", { granularity: "grapheme" });
+    return [...seg.segment(str)].filter(s => s.segment.trim()).length;
+  }
+  return [...str].filter(c => c.trim()).length;
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function cellHtml(item) {
+  const n = emojiCount(item.emoji);
+  const cls = n >= 3 ? "emoji three" : (n === 2 ? "emoji two" : "emoji");
+  return '<div class="cell"><div class="' + cls + '">' + item.emoji +
+         '</div><div class="label">' + escapeHtml(item.label) + '</div></div>';
+}
+
+function makeCard(idx, items) {
+  const picks = shuffle(items).slice(0, 24);
+  const cells = [];
+  let p = 0;
+  for (let i = 0; i < 25; i++) {
+    if (i === 12) {
+      cells.push('<div class="cell free"><div class="emoji">🚗</div><div class="label">Бинго</div></div>');
+    } else {
+      cells.push(cellHtml(picks[p++]));
+    }
+  }
+  return '<div class="card"><h2>🚗 Дорожное бинго №' + (idx + 1) +
+         '</h2><div class="grid">' + cells.join('') +
+         '</div><div class="footer">Telegram: ' + CHANNEL + '</div></div>';
+}
+
+function updateCounter() {
+  const n = parseAll().length;
+  const el = document.getElementById('counter');
+  if (n >= NEEDED) {
+    el.className = "counter ok";
+    el.textContent = "✓ Понятий: " + n + " — хватает (нужно от " + NEEDED + ").";
+  } else {
+    el.className = "counter bad";
+    el.textContent = "Понятий: " + n + " — мало, нужно ещё " + (NEEDED - n) + " (минимум " + NEEDED + ").";
+  }
+}
+
+function render() {
+  const items = parseAll();
+  updateCounter();
+  if (items.length < NEEDED) {
+    document.getElementById('cards').innerHTML = "";
+    return;
+  }
+  let count = parseInt(document.getElementById('count').value, 10) || 8;
+  count = Math.max(1, Math.min(40, count));
+  const out = [];
+  for (let i = 0; i < count; i++) out.push(makeCard(i, items));
+  document.getElementById('cards').innerHTML = out.join('');
+}
+
+// --- URL-параметр ?list= (base64, UTF-8 safe) ---
+function encodeList(text) { return btoa(unescape(encodeURIComponent(text))); }
+function decodeList(b64) { return decodeURIComponent(escape(atob(b64))); }
+
+function copyShareLink() {
+  const url = location.origin + location.pathname + "?list=" +
+              encodeURIComponent(encodeList(document.getElementById('words').value));
+  navigator.clipboard?.writeText(url).then(
+    () => alert("Ссылка скопирована! Длина: " + url.length + " симв.\n\n" +
+                (url.length > 6000 ? "⚠️ Очень длинная — короткий список надёжнее." : "Можно делиться.")),
+    () => prompt("Скопируй ссылку вручную:", url)
+  ) || prompt("Скопируй ссылку вручную:", url);
+}
+
+// --- Инициализация ---
+(function init() {
+  const params = new URLSearchParams(location.search);
+  const l = params.get('list');
+  let initial = DEFAULT_LIST;
+  if (l) {
+    try { initial = decodeList(l); } catch (e) { /* битый параметр — дефолт */ }
+  }
+  const ta = document.getElementById('words');
+  ta.value = initial;
+  ta.addEventListener('input', updateCounter);
+  render();
+})();
+</script>
+</body>
+</html>
