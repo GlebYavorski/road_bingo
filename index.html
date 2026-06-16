@@ -7,11 +7,15 @@
 <title>Дорожное бинго — распечатать карточки для детей бесплатно</title>
 <meta name="description" content="Дорожное бинго — бесплатный генератор карточек для игры в дорогу с детьми. Распечатай или сохрани в PDF, составь свой список слов с эмодзи. Развлечение в машине, поезде и автобусе. Канал @carpemachinatio">
 <link rel="canonical" href="https://bingo.carpemachinatio.com/">
+<link rel="alternate" hreflang="ru" href="https://bingo.carpemachinatio.com/">
+<link rel="alternate" hreflang="en" href="https://bingo.carpemachinatio.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://bingo.carpemachinatio.com/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 
 <!-- Open Graph / превью ссылки в Telegram -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://bingo.carpemachinatio.com/">
 <meta property="og:title" content="🚗 Дорожное бинго — карточки для детей">
 <meta property="og:description" content="Генератор карточек для игры в дорогу. Свой список слов, эмодзи-картинки, печать и PDF. @carpemachinatio">
@@ -30,7 +34,7 @@
   "name": "Дорожное бинго",
   "url": "https://bingo.carpemachinatio.com/",
   "description": "Бесплатный генератор карточек «Дорожное бинго» для игры в дорогу с детьми: печать, PDF, свой список слов с эмодзи.",
-  "inLanguage": "ru",
+  "inLanguage": ["ru", "en"],
   "applicationCategory": "GameApplication",
   "operatingSystem": "Web",
   "isAccessibleForFree": true,
@@ -38,321 +42,7 @@
 }
 </script>
 
-<style>
-  /* Светлая тема (по умолчанию) */
-  :root {
-    --bg: #f4f4f4;
-    --text: #222;
-    --muted: #555;
-    --link: #2d6cdf;
-    --panel-bg: #fff;
-    --panel-border: #ddd;
-    --input-bg: #fff;
-    --input-border: #ccc;
-    --hint: #888;
-    --ok: #1e8449;
-    --bad: #c0392b;
-    --accent: #2d6cdf;
-    --accent-text: #fff;
-    --secondary: #666;
-    --card-bg: #fff;
-    --card-text: #222;
-    --card-border: #222;
-    --cell-border: #444;
-    --free-bg: #e0e0e0;
-    --free-text: #222;
-    --free-border: #888;
-    --footer: #555;
-    --shadow: rgba(0,0,0,0.12);
-  }
-
-  /* Тёмная палитра */
-  :root[data-theme="dark"] {
-    --bg: #181818;
-    --text: #e6e6e6;
-    --muted: #a8a8a8;
-    --link: #6ea8ff;
-    --panel-bg: #242424;
-    --panel-border: #3a3a3a;
-    --input-bg: #1c1c1c;
-    --input-border: #454545;
-    --hint: #888;
-    --ok: #4caf72;
-    --bad: #ff6f61;
-    --accent: #3b78e7;
-    --accent-text: #fff;
-    --secondary: #555;
-    --card-bg: #262626;
-    --card-text: #ededed;
-    --card-border: #d8d8d8;
-    --cell-border: #6a6a6a;
-    --free-bg: #3a3a3a;
-    --free-text: #ededed;
-    --free-border: #7a7a7a;
-    --footer: #9a9a9a;
-    --shadow: rgba(0,0,0,0.5);
-  }
-
-  /* Автодетект системной темы, если пользователь не выбрал явно */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #181818;
-      --text: #e6e6e6;
-      --muted: #a8a8a8;
-      --link: #6ea8ff;
-      --panel-bg: #242424;
-      --panel-border: #3a3a3a;
-      --input-bg: #1c1c1c;
-      --input-border: #454545;
-      --hint: #888;
-      --ok: #4caf72;
-      --bad: #ff6f61;
-      --accent: #3b78e7;
-      --accent-text: #fff;
-      --secondary: #555;
-      --card-bg: #262626;
-      --card-text: #ededed;
-      --card-border: #d8d8d8;
-      --cell-border: #6a6a6a;
-      --free-bg: #3a3a3a;
-      --free-text: #ededed;
-      --free-border: #7a7a7a;
-      --footer: #9a9a9a;
-      --shadow: rgba(0,0,0,0.5);
-    }
-  }
-
-  * { box-sizing: border-box; }
-  body {
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    margin: 0;
-    padding: 0 16px 16px;
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  .hero {
-    max-width: 720px;
-    margin: 0 auto 18px;
-    text-align: center;
-    padding: 28px 18px 22px;
-  }
-  .hero .emoji { font-size: 46px; }
-  .hero h1 { font-size: 26px; margin: 8px 0 6px; }
-  .hero p { color: var(--muted); font-size: 15px; margin: 0; }
-  .hero a { color: var(--link); text-decoration: none; font-weight: 600; }
-  .hero a:hover { text-decoration: underline; }
-
-  /* Кнопка переключения темы */
-  .theme-toggle {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    font-size: 20px;
-    line-height: 1;
-    border: 1px solid var(--panel-border);
-    border-radius: 50%;
-    background: var(--panel-bg);
-    color: var(--text);
-    cursor: pointer;
-    box-shadow: 0 1px 4px var(--shadow);
-  }
-  .theme-toggle:hover { filter: brightness(1.08); }
-
-  .panel {
-    max-width: 720px;
-    margin: 0 auto 24px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
-    padding: 16px 18px;
-  }
-  .panel h2 { font-size: 16px; margin: 0 0 10px; }
-  .rules { font-size: 14px; line-height: 1.6; margin: 0 0 4px; padding-left: 20px; }
-  .rules li { margin-bottom: 2px; }
-
-  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
-  textarea {
-    width: 100%;
-    min-height: 170px;
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 13px;
-    padding: 10px;
-    background: var(--input-bg);
-    color: var(--text);
-    border: 1px solid var(--input-border);
-    border-radius: 8px;
-    resize: vertical;
-  }
-  .counter { font-size: 13px; font-weight: 600; margin-top: 6px; }
-  .counter.ok { color: var(--ok); }
-  .counter.bad { color: var(--bad); }
-  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
-  .row label { margin: 0; }
-  input[type=number] {
-    width: 64px;
-    padding: 7px;
-    background: var(--input-bg);
-    color: var(--text);
-    border: 1px solid var(--input-border);
-    border-radius: 6px;
-    font-size: 14px;
-  }
-  .hint { font-size: 12px; color: var(--hint); margin-top: 6px; line-height: 1.4; }
-  button {
-    font-size: 15px;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    background: var(--accent);
-    color: var(--accent-text);
-    cursor: pointer;
-  }
-  button.secondary { background: var(--secondary); font-size: 13px; padding: 8px 14px; }
-  button:hover { filter: brightness(1.08); }
-
-  /* Призыв редактировать список */
-  .edit-cta {
-    font-size: 14px;
-    line-height: 1.45;
-    color: var(--text);
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin: 0 0 10px;
-  }
-
-  /* Главная кнопка генерации — крупнее остальных */
-  button.generate {
-    font-size: 16px;
-    font-weight: 700;
-    padding: 12px 24px;
-  }
-  /* Пульс, когда список изменён, а карточки ещё не обновлены */
-  button.generate.attn {
-    animation: pulse 1.3s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); }
-    50%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent); }
-  }
-  .dirty-note {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--bad);
-    display: none;
-  }
-  .dirty-note.show { display: inline; }
-
-  .secondary-row { margin-top: 8px; }
-  button.secondary.ghost {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--input-border);
-  }
-
-  .card {
-    width: 18cm;
-    max-width: 100%;
-    margin: 0 auto 24px;
-    background: var(--card-bg);
-    border: 3px solid var(--card-border);
-    border-radius: 10px;
-    padding: 10px 14px 12px;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-  .card h2 {
-    text-align: center;
-    margin: 4px 0 10px;
-    font-size: 22px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--card-text);
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-auto-rows: 1fr;
-    gap: 4px;
-  }
-  .cell {
-    border: 1.5px solid var(--cell-border);
-    border-radius: 7px;
-    aspect-ratio: 1 / 1;
-    color: var(--card-text);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 3px;
-    overflow: hidden;
-  }
-  .cell .emoji {
-    font-size: 40px;
-    line-height: 1.05;
-    white-space: nowrap;
-    letter-spacing: -1px;
-  }
-  .cell .emoji.two { font-size: 32px; }
-  .cell .emoji.three { font-size: 25px; }
-  .cell .label { font-size: 11px; line-height: 1.1; margin-top: 3px; font-weight: 600; }
-  .cell.free {
-    background: var(--free-bg);
-    color: var(--free-text);
-    border-color: var(--free-border);
-  }
-  .cell.free .emoji { font-size: 32px; }
-  .cell.free .label {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .card .footer {
-    text-align: center;
-    font-size: 11px;
-    color: var(--footer);
-    margin-top: 8px;
-    letter-spacing: 0.5px;
-  }
-
-  @media print {
-    /* Печать всегда светлая — экономия чернил, независимо от темы экрана */
-    :root, :root[data-theme="dark"], :root[data-theme="light"] {
-      --bg: #fff;
-      --text: #222;
-      --card-bg: #fff;
-      --card-text: #222;
-      --card-border: #222;
-      --cell-border: #444;
-      --free-bg: #e0e0e0;
-      --free-text: #222;
-      --free-border: #888;
-      --footer: #555;
-    }
-    body { background: #fff; padding: 0; }
-    .hero, .panel, .theme-toggle { display: none; }
-    /* Подписи под эмодзи: на печати — чёрные, крупнее и жирнее (фидбек: мелко и серо) */
-    .cell .label {
-      color: #000;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .card {
-      width: 100%;
-      margin: 0 0 0.6cm;
-      border-width: 2px;
-    }
-    @page { size: A4 portrait; margin: 1cm; }
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 <script>
   // Применяем сохранённую тему до отрисовки — без мигания.
   (function () {
@@ -367,296 +57,55 @@
 </head>
 <body>
 
+<button class="lang-toggle" onclick="toggleLang()">EN</button>
 <button class="theme-toggle" onclick="toggleTheme()" title="Тёмная тема" aria-label="Переключить тему">🌙</button>
 
 <div class="hero">
   <div class="emoji">🚗🛣️🎲</div>
-  <h1>Дорожное бинго</h1>
-  <p>Игра в дорогу для детей. Канал: <a href="https://t.me/carpemachinatio" target="_blank" rel="noopener">@carpemachinatio</a> &nbsp;·&nbsp; <a href="https://carpemachinatio.com">carpemachinatio.com</a></p>
+  <h1 data-i18n="heroH1">Дорожное бинго</h1>
+  <p data-i18n-html="heroTagline">Игра в дорогу для детей. Канал: <a href="https://t.me/carpemachinatio" target="_blank" rel="noopener">@carpemachinatio</a> &nbsp;·&nbsp; <a href="https://carpemachinatio.com">carpemachinatio.com</a></p>
 </div>
 
 <div class="panel">
-  <h2>📋 Как играть</h2>
+  <h2 data-i18n="rulesH2">📋 Как играть</h2>
   <ol class="rules">
-    <li>Раздай каждому свою карточку.</li>
-    <li>Заметил объект из клетки за окном — отмечай её.</li>
-    <li>Центр «Бинго» — бесплатная клетка, уже закрыта.</li>
-    <li>Закрыл целый ряд (по горизонтали, вертикали или диагонали) — кричи «Бинго!».</li>
-    <li>Закрыл всю карточку — полная победа.</li>
+    <li data-i18n="rule1">Раздай каждому свою карточку.</li>
+    <li data-i18n="rule2">Заметил объект из клетки за окном — отмечай её.</li>
+    <li data-i18n="rule3">Центр «Бинго» — бесплатная клетка, уже закрыта.</li>
+    <li data-i18n="rule4">Закрыл целый ряд (по горизонтали, вертикали или диагонали) — кричи «Бинго!».</li>
+    <li data-i18n="rule5">Закрыл всю карточку — полная победа.</li>
   </ol>
 </div>
 
 <div class="panel">
-  <h2>✏️ Список</h2>
-  <p class="edit-cta">👇 Это <b>редактируемый</b> список — меняй строки, добавляй своё или удаляй лишнее. Потом нажми <b>«Сгенерировать»</b> — и получишь свои карточки.</p>
-  <label for="words">Понятия (по одному в строке)</label>
+  <h2 data-i18n="listH2">✏️ Список</h2>
+  <p class="edit-cta" data-i18n-html="editCta">👇 Это <b>редактируемый</b> список — меняй строки, добавляй своё или удаляй лишнее. Потом нажми <b>«Сгенерировать»</b> — и получишь свои карточки.</p>
+  <label for="words" data-i18n="wordsLabel">Понятия (по одному в строке)</label>
   <textarea id="words" spellcheck="false"></textarea>
   <div id="counter" class="counter"></div>
-  <div class="hint">
+  <div class="hint" data-i18n-html="hint">
     Формат строки: <b>1–3 эмодзи</b>, пробел, затем <b>название</b> (рус. или англ.).<br>
     Пример: <code>🟢🌿 Омела</code> &nbsp;·&nbsp; <code>🚂🛤️ Ж/д переезд</code> &nbsp;·&nbsp; <code>🐄 Корова</code><br>
     Несколько эмодзи помогают тем, кто ещё плохо читает.
   </div>
 
   <div class="row">
-    <label for="count">Сколько карточек:</label>
+    <label for="count" data-i18n="countLabel">Сколько карточек:</label>
     <input type="number" id="count" value="8" min="1" max="40">
-    <button id="genBtn" class="generate" onclick="render()">✨ Сгенерировать</button>
-    <span id="dirtyNote" class="dirty-note">Список изменён — обнови карточки 👈</span>
+    <button id="genBtn" class="generate" onclick="render()" data-i18n="genBtn">✨ Сгенерировать</button>
+    <span id="dirtyNote" class="dirty-note" data-i18n="dirtyNote">Список изменён — обнови карточки 👈</span>
   </div>
   <div class="row secondary-row">
-    <button class="secondary" onclick="window.print()">🖨️ Печать / PDF</button>
-    <button class="secondary" onclick="copyShareLink()">🔗 Ссылка с этим списком</button>
-    <button class="secondary ghost" onclick="resetList()">↩️ Вернуть стандартный список</button>
+    <button class="secondary" onclick="window.print()" data-i18n="printBtn">🖨️ Печать / PDF</button>
+    <button class="secondary" onclick="copyShareLink()" data-i18n="shareBtn">🔗 Ссылка с этим списком</button>
+    <button class="secondary ghost" onclick="resetList()" data-i18n="resetBtn">↩️ Вернуть стандартный список</button>
   </div>
 </div>
 
 <div id="cards"></div>
 
-<script>
-const DEFAULT_LIST = `🚙🌍 Авто с иностранными номерами
-🚌 Автобус (рейсовый/городской)
-🚏 Автобусная остановка
-🚗🔗 Авто с прицепом
-🐦 Аист
-🏗️ Башенный кран
-🛢️🚛 Бензовоз
-⚪🌳 Берёза
-🌳 Большое одинокое дерево
-🚲 Велосипед
-🌬️🌀 Ветряная мельница
-🚰🗼 Водонапорная башня
-🪺🐦 Гнездо аиста на столбе
-🏘️ Деревня
-🧱🏠 Дом из красного кирпича
-🏡 Дом с черепичной крышей
-🚂🛤️ Ж/д переезд
-⛽ Заправка
-🎨🧱 Граффити
-⛺🪑 Знак «место привала»
-🛑 Знак «стоп»
-⏲️🚗 Ограничение скорости <60
-📷 Камера (видеофиксация)
-🕳️ Канава
-🪦 Кладбище
-🌽🚜 Комбайн
-🐄 Корова
-🛖🐄 Коровник
-🐈 Кот
-🌲🌲 Лес
-🐎 Лошадь
-🏪 Магазин
-🚓 Машина ГАИ
-🚗🧽 Мойка
-🥛🚛 Молоковоз
-🌉 Мост
-🏍️ Мотоцикл
-🗑️ Мусорный контейнер
-🐑🐐 Овца или коза
-🏞️💧 Водоём (озеро/пруд)
-⚡🗼 Опора ЛЭП
-🗿 Памятник / скульптура
-🌾 Поле
-🛣️🔵 Синий указатель с километражом
-🪵 Сложенные брёвна
-🐕 Собака
-📡🗼 Сотовая вышка
-🐄🐄 Стадо коров
-🚧 Стройка
-🪧🌊 Табличка с названием реки
-🚜 Трактор
-🚍🧳 Туристический автобус
-🔚🏘️ Конец населённого пункта
-🎀 Украшение на столбе
-🦆 Утки
-🇧🇾 Флаг страны
-🚛 Фура с логотипом
-⛰️ Холм
-☦️⛪ Православная церковь
-⛪✝️ Католический костёл
-✝️ Крест
-🛩️ Летательный объект (самолёт/шар/дрон)
-🔄 Круговая развязка
-🚚🌀 Бетономешалка
-🚛🪵 Лесовоз
-🚗🚫 Знак «обгон запрещён»
-⚠️🦌 Знак «осторожно, дикие животные»
-☀️🔋 Солнечная панель
-🔌🚗 Электромобиль
-💗 Что-то в форме сердечка
-🏎️ Яркая машина`;
-
-const CHANNEL = "@carpemachinatio";
-const NEEDED = 24;
-
-// --- Тема: автодетект системной + ручное переключение (localStorage) ---
-function systemPrefersDark() {
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
-function currentTheme() {
-  const explicit = document.documentElement.getAttribute('data-theme');
-  if (explicit === 'dark' || explicit === 'light') return explicit;
-  return systemPrefersDark() ? 'dark' : 'light';
-}
-function updateThemeButton() {
-  const btn = document.querySelector('.theme-toggle');
-  if (!btn) return;
-  const dark = currentTheme() === 'dark';
-  btn.textContent = dark ? '☀️' : '🌙';
-  btn.title = dark ? 'Светлая тема' : 'Тёмная тема';
-}
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  try { localStorage.setItem('theme', t); } catch (e) { /* недоступно */ }
-  updateThemeButton();
-}
-function toggleTheme() {
-  applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
-}
-
-// Разбор строки: ведущие эмодзи (до первой буквы) -> картинка, остальное -> подпись.
-function parseLine(line) {
-  const trimmed = line.trim();
-  if (!trimmed) return null;
-  const m = trimmed.match(/[A-Za-zА-Яа-яЁё]/);
-  if (!m) return { emoji: trimmed, label: "" };
-  const idx = m.index;
-  const emoji = trimmed.slice(0, idx).trim();
-  const label = trimmed.slice(idx).trim();
-  return { emoji: emoji || "•", label };
-}
-
-function parseAll() {
-  return document.getElementById('words').value
-    .split('\n').map(parseLine).filter(Boolean);
-}
-
-// Кол-во эмодзи-знаков (с учётом ZWJ/флагов через сегментацию).
-function emojiCount(str) {
-  if (window.Intl && Intl.Segmenter) {
-    const seg = new Intl.Segmenter("ru", { granularity: "grapheme" });
-    return [...seg.segment(str)].filter(s => s.segment.trim()).length;
-  }
-  return [...str].filter(c => c.trim()).length;
-}
-
-function shuffle(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function escapeHtml(s) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function cellHtml(item) {
-  const n = emojiCount(item.emoji);
-  const cls = n >= 3 ? "emoji three" : (n === 2 ? "emoji two" : "emoji");
-  return '<div class="cell"><div class="' + cls + '">' + item.emoji +
-         '</div><div class="label">' + escapeHtml(item.label) + '</div></div>';
-}
-
-function makeCard(idx, items) {
-  const picks = shuffle(items).slice(0, 24);
-  const cells = [];
-  let p = 0;
-  for (let i = 0; i < 25; i++) {
-    if (i === 12) {
-      cells.push('<div class="cell free"><div class="emoji">🚗</div><div class="label">Бинго</div></div>');
-    } else {
-      cells.push(cellHtml(picks[p++]));
-    }
-  }
-  return '<div class="card"><h2>🚗 Дорожное бинго №' + (idx + 1) +
-         '</h2><div class="grid">' + cells.join('') +
-         '</div><div class="footer">Telegram: ' + CHANNEL + '</div></div>';
-}
-
-function updateCounter() {
-  const n = parseAll().length;
-  const el = document.getElementById('counter');
-  if (n >= NEEDED) {
-    el.className = "counter ok";
-    el.textContent = "✓ Понятий: " + n + " — хватает (нужно от " + NEEDED + ").";
-  } else {
-    el.className = "counter bad";
-    el.textContent = "Понятий: " + n + " — мало, нужно ещё " + (NEEDED - n) + " (минимум " + NEEDED + ").";
-  }
-}
-
-// --- "Грязное" состояние: список изменён, карточки ещё не пересобраны ---
-let lastRendered = null;
-function markDirty() {
-  const dirty = document.getElementById('words').value !== lastRendered;
-  document.getElementById('genBtn').classList.toggle('attn', dirty);
-  document.getElementById('dirtyNote').classList.toggle('show', dirty);
-}
-function clearDirty() {
-  lastRendered = document.getElementById('words').value;
-  document.getElementById('genBtn').classList.remove('attn');
-  document.getElementById('dirtyNote').classList.remove('show');
-}
-function resetList() {
-  document.getElementById('words').value = DEFAULT_LIST;
-  updateCounter();
-  render();
-}
-
-function render() {
-  const items = parseAll();
-  updateCounter();
-  clearDirty();
-  if (items.length < NEEDED) {
-    document.getElementById('cards').innerHTML = "";
-    return;
-  }
-  let count = parseInt(document.getElementById('count').value, 10) || 8;
-  count = Math.max(1, Math.min(40, count));
-  const out = [];
-  for (let i = 0; i < count; i++) out.push(makeCard(i, items));
-  document.getElementById('cards').innerHTML = out.join('');
-}
-
-// --- URL-параметр ?list= (base64, UTF-8 safe) ---
-function encodeList(text) { return btoa(unescape(encodeURIComponent(text))); }
-function decodeList(b64) { return decodeURIComponent(escape(atob(b64))); }
-
-function copyShareLink() {
-  const url = location.origin + location.pathname + "?list=" +
-              encodeURIComponent(encodeList(document.getElementById('words').value));
-  navigator.clipboard?.writeText(url).then(
-    () => alert("Ссылка скопирована! Длина: " + url.length + " симв.\n\n" +
-                (url.length > 6000 ? "⚠️ Очень длинная — короткий список надёжнее." : "Можно делиться.")),
-    () => prompt("Скопируй ссылку вручную:", url)
-  ) || prompt("Скопируй ссылку вручную:", url);
-}
-
-// --- Инициализация ---
-(function init() {
-  const params = new URLSearchParams(location.search);
-  const l = params.get('list');
-  let initial = DEFAULT_LIST;
-  if (l) {
-    try { initial = decodeList(l); } catch (e) { /* битый параметр — дефолт */ }
-  }
-  const ta = document.getElementById('words');
-  ta.value = initial;
-  ta.addEventListener('input', () => { updateCounter(); markDirty(); });
-
-  // Тема: показать правильную иконку и следить за системной, пока выбор не сделан вручную.
-  updateThemeButton();
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if (!document.documentElement.getAttribute('data-theme')) updateThemeButton();
-    });
-  }
-
-  render();
-})();
-</script>
+<script src="words.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
